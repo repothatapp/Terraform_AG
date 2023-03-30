@@ -8,7 +8,7 @@ in this terraform configuration file
 */
 
 resource "azurerm_public_ip" "gatewayip" {
-  depends_on = [ azurerm_resource_group.appgrp ]
+  depends_on = [ azurerm_virtual_network.appnetwork ]
   name                = "gateway-ip"
   resource_group_name = local.resource_group_name
   location            = local.location
@@ -19,8 +19,8 @@ resource "azurerm_public_ip" "gatewayip" {
 
 # We need an additional subnet in the virtual network
 resource "azurerm_subnet" "appsubnet" {
-  depends_on = [ azurerm_resource_group.appgrp ]
-  name                 = "appsubnet"
+  depends_on = [ azurerm_virtual_network.appnetwork ]
+  name                 = var.ag_subnet_name
   resource_group_name  = local.resource_group_name
   virtual_network_name = local.virtual_network.name
   address_prefixes     = ["10.0.1.0/24"] 
