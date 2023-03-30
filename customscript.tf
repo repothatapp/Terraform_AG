@@ -1,9 +1,9 @@
 # The storage account will be used to store the script for Custom Script extension
 
 resource "azurerm_storage_account" "vmstore" {
-  name                     = "vmstore2399"
-  resource_group_name      = "app-grp"
-  location                 = "North Europe"
+  name                     = var.storage_account_name
+  resource_group_name      = local.resource_group_name
+  location                 = local.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
   account_kind = "StorageV2"  
@@ -14,7 +14,7 @@ resource "azurerm_storage_account" "vmstore" {
 
 resource "azurerm_storage_container" "data" {
   name                  = "data"
-  storage_account_name  = "vmstore2399"
+  storage_account_name  = var.storage_account_name
   container_access_type = "blob"
   depends_on=[
     azurerm_storage_account.vmstore
@@ -24,7 +24,7 @@ resource "azurerm_storage_container" "data" {
 resource "azurerm_storage_blob" "IISConfig" {
   for_each = toset(local.function)
   name                   = "IIS_Config_${each.key}.ps1"
-  storage_account_name   = "vmstore2399"
+  storage_account_name   = var.storage_account_name
   storage_container_name = "data"
   type                   = "Block"
   source                 = "IIS_Config_${each.key}.ps1"
